@@ -2,6 +2,7 @@ package com.chen;
 
 import com.chen.config.ApplicationProperties;
 
+import com.chen.config.FileProperties;
 import io.github.jhipster.config.DefaultProfileUtil;
 import io.github.jhipster.config.JHipsterConstants;
 
@@ -21,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @SpringBootApplication
-@EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
+@EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class, FileProperties.class})
 public class KdAppAdminApp {
 
     private static final Logger log = LoggerFactory.getLogger(KdAppAdminApp.class);

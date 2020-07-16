@@ -6,7 +6,9 @@ import com.chen.repository.UserRepository;
 import com.chen.security.AuthoritiesConstants;
 import com.chen.service.MailService;
 import com.chen.service.UserService;
+import com.chen.service.dto.MenuDTO;
 import com.chen.service.dto.UserDTO;
+import com.chen.utils.CommonResult;
 import com.chen.web.rest.errors.BadRequestAlertException;
 import com.chen.web.rest.errors.EmailAlreadyUsedException;
 import com.chen.web.rest.errors.LoginAlreadyUsedException;
@@ -185,5 +187,17 @@ public class UserResource {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "userManagement.deleted", login)).build();
+    }
+
+    @GetMapping("/users/current")
+    public CommonResult<UserDTO> currentAccount() {
+        UserDTO dto = userService.findCurrentLogin();
+        return CommonResult.success(dto);
+    }
+
+    @GetMapping("/users/menus")
+    public CommonResult<List<MenuDTO>> findCurrentLoginMenus() {
+        List<MenuDTO> dtoList = userService.findCurrentLoginMenus();
+        return CommonResult.success(dtoList);
     }
 }

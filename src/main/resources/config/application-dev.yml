@@ -37,9 +37,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/kdAppAdmin?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password:
+    url: jdbc:mysql://huangpulouyu.mysql.rds.aliyuncs.com:3306/kdapp?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8&createDatabaseIfNotExist=true
+    username: hply
+    password: nxar_yyHGe_*WFMt9bba
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -91,7 +91,7 @@ jhipster:
         # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
         base64-secret: NjA0YmU0MjBjMDMxODZhODU4NTcwNWFiNzEwZmQ1ZDU0MWZkN2MxMWY5NTIzZmRjODEwZWFjZDE1ZTIxMGQxOWZlNTIzMTAwZjEyNjM2Y2ViYzBjZWNjN2VmOTQyMmMxYjExNjM2NTRiOWI3ZThlNzUwNWQ1MGE2M2U1YmYwNTI=
         # Token is valid 24 hours
-        token-validity-in-seconds: 86400
+        token-validity-in-seconds: 2592000
         token-validity-in-seconds-for-remember-me: 2592000
   mail: # specific JHipster mail property, for standard properties see MailProperties
     base-url: http://127.0.0.1:8080

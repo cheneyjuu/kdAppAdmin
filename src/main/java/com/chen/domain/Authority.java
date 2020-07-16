@@ -1,25 +1,26 @@
 package com.chen.domain;
 
+import com.google.common.base.Preconditions;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * An authority (a security role) used by Spring Security.
+ * 后台帐号所拥有的角色
+ *
+ * @author chen
  */
 @Entity
-@Table(name = "jhi_authority")
+@Table(name = "idms_authority")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Authority implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2011952570664538864L;
 
     @NotNull
     @Size(max = 50)
@@ -27,12 +28,44 @@ public class Authority implements Serializable {
     @Column(length = 50)
     private String name;
 
+    /**
+     * 角色拥有的菜单
+     */
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "idms_authority_menu", joinColumns = @JoinColumn(name = "name"))
+    @Column(name = "menu_id")
+    private List<Long> menuIds;
+
+    public void addMenus(List<Long> menuIds) {
+        Preconditions.checkNotNull(menuIds, "菜单不能为空");
+        this.menuIds = menuIds;
+    }
+
+    public static Authority createAuthority(String authorityName) {
+        return new Authority(authorityName);
+    }
+
+    protected Authority(String name) {
+        this.name = name;
+    }
+
+    public Authority() {
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Long> getMenuIds() {
+        return menuIds;
+    }
+
+    public void setMenuIds(List<Long> menuIds) {
+        this.menuIds = menuIds;
     }
 
     @Override
@@ -51,7 +84,6 @@ public class Authority implements Serializable {
         return Objects.hashCode(name);
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
         return "Authority{" +

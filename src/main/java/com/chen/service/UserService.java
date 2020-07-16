@@ -2,13 +2,19 @@ package com.chen.service;
 
 import com.chen.config.Constants;
 import com.chen.domain.Authority;
+import com.chen.domain.Menu;
 import com.chen.domain.User;
 import com.chen.repository.AuthorityRepository;
+import com.chen.repository.MenuRepository;
 import com.chen.repository.UserRepository;
 import com.chen.security.AuthoritiesConstants;
 import com.chen.security.SecurityUtils;
+import com.chen.service.dto.MenuDTO;
 import com.chen.service.dto.UserDTO;
 
+import com.chen.service.exceptions.AccountNotExistException;
+import com.chen.service.mapper.MenuMapper;
+import com.google.common.collect.Lists;
 import io.github.jhipster.security.RandomUtil;
 
 import org.slf4j.Logger;
@@ -26,6 +32,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.chen.config.Constants.ANONYMOUS_USER;
+
 /**
  * Service class for managing users.
  */
@@ -40,13 +48,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
-
+    private final MenuRepository menuRepository;
+    private final MenuMapper menuMapper;
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, MenuRepository menuRepository, MenuMapper menuMapper, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
+        this.menuRepository = menuRepository;
+        this.menuMapper = menuMapper;
         this.cacheManager = cacheManager;
     }
 
@@ -256,7 +267,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
-        return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
+        return userRepository.findAllByLoginNot(pageable, ANONYMOUS_USER).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)
@@ -300,5 +311,35 @@ public class UserService {
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public UserDTO findCurrentLogin() {
+        String login = SecurityUtils.getCurrentUserLogin().orElse(ANONYMOUS_USER);
+        if (!ANONYMOUS_USER.equals(login)) {
+            return userRepository.findOneByLogin(login).map(UserDTO::new).orElseThrow(() -> new AccountNotExistException("未找到帐号"));
+        }
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    public List<MenuDTO> findCurrentLoginMenus() {
+        String login = SecurityUtils.getCurrentUserLogin().orElse(ANONYMOUS_USER);
+        if (!ANONYMOUS_USER.equals(login)) {
+            User user = userRepository.findOneByLogin(login).orElseThrow(() -> new AccountNotExistException("未找到帐号"));
+            List<Authority> authorityList = Lists.newArrayList(user.getAuthorities());
+            List<MenuDTO> menuDtoList = Lists.newArrayList();
+            for (Authority authority : authorityList) {
+                List<MenuDTO> dtoList = authority.getMenuIds().parallelStream().map(menuRepository::findById)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .sorted(Comparator.comparing(Menu::getSort))
+                    .map(menuMapper::toDto)
+                    .collect(Collectors.toList());
+                menuDtoList.addAll(dtoList);
+            }
+            return menuDtoList;
+        }
+        return null;
     }
 }
