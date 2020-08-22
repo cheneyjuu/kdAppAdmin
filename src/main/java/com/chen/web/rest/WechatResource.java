@@ -35,8 +35,8 @@ public class WechatResource {
     private static final String VALIDATE_TOKEN = "testweixin";
     private static final char[] HEX = {'0', '1', '2', '3', '4', '5',
         '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-    private static final String APP_ID = "wx8b505bdaf0b5fdda";
-    private static final String APP_SECRET = "4cb1d5fd6c392b3d541fb2cc19f7a765";
+    private static final String APP_ID = "wx7d7d4163b5995846";
+    private static final String APP_SECRET = "2a714158b7719ae7974e90f33ed493a6";
     private final WechatAccountService wechatAccountService;
 
     public WechatResource(WechatAccountService wechatAccountService, Environment env) {
@@ -103,7 +103,7 @@ public class WechatResource {
 
     @PostMapping("/account")
     public CommonResult<Boolean> updateOrCreate(@RequestBody WechatAccountDTO payload) {
-        log.info("updateOrCreate method; payload => {}", payload);
+        log.info("更新或新建微信小程序用户; payload => {}", payload);
         try {
             wechatAccountService.createOrUpdate(payload);
             return CommonResult.success(true);

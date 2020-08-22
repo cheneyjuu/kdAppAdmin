@@ -972,7 +972,7 @@
             </build>
             <properties>
                 <!-- default Spring profiles -->
-                <spring.profiles.active>prod${profile.swagger}${profile.tls}${profile.no-liquibase}</spring.profiles.active>
+                <spring.profiles.active>prod,tls,no-liquibase</spring.profiles.active>
             </properties>
         </profile>
         <profile>

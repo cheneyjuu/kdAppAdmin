@@ -40,4 +40,14 @@ public class WechatAccountDTO {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+    @Override
+    public String toString() {
+        return "WechatAccountDTO{" +
+            "nickName='" + nickName + '\'' +
+            ", openId='" + openId + '\'' +
+            ", avatarUrl='" + avatarUrl + '\'' +
+            ", gender='" + gender + '\'' +
+            '}';
+    }
 }

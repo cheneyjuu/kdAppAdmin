@@ -37,7 +37,7 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://huangpulouyu.mysql.rds.aliyuncs.com:3306/kdapp?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8&createDatabaseIfNotExist=true
+    url: jdbc:mysql://huangpulouyu.mysql.rds.aliyuncs.com:3306/kdAppAdmin?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8&createDatabaseIfNotExist=true
     username: hply
     password: nxar_yyHGe_*WFMt9bba
     hikari:

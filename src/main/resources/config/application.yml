@@ -64,8 +64,8 @@ spring:
     multipart:
       enabled: true
       file-size-threshold: 2KB
-      max-file-size: 3MB
-      max-request-size: 3MB
+      max-file-size: 20MB
+      max-request-size: 20MB
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
     # Otherwise, it will be filled in by maven when building the JAR file

@@ -32,12 +32,14 @@ public class FileService {
     private static final int COVER_IMG_WIDTH = 750;
 
     private final Path imageStorageLocation;
-    private final Path videoStorageLocation;
+    private final Path mediaStorageLocation;
+    private final Path fileStorageLocation;
 
     @Autowired
     public FileService(FileProperties fileProperties) {
-        this.imageStorageLocation = Paths.get(fileProperties.getUploadDir()).toAbsolutePath().normalize();
-        this.videoStorageLocation = Paths.get(fileProperties.getUploadDir() + "/video").toAbsolutePath().normalize();
+        this.imageStorageLocation = Paths.get(fileProperties.getUploadDir() + "/image").toAbsolutePath().normalize();
+        this.mediaStorageLocation = Paths.get(fileProperties.getUploadDir() + "/media").toAbsolutePath().normalize();
+        this.fileStorageLocation = Paths.get(fileProperties.getUploadDir() + "/file").toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.imageStorageLocation);
         } catch (Exception ex) {
@@ -56,9 +58,31 @@ public class FileService {
             if (fileName.contains("..")) {
                 throw new FileException("Sorry! Filename contains invalid path sequence " + fileName);
             }
-            Path targetLocation = this.videoStorageLocation.resolve(fileName);
+            Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             log.info("文件上传路径: {}", targetLocation.toString());
+            map.put("fileName", fileName);
+            return map;
+        } catch (FileException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Map<String, Object> storeMediaFile(MultipartFile file) {
+        Map<String, Object> map = Maps.newHashMapWithExpectedSize(2);
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        int idx = fileName.lastIndexOf(".");
+        String preName = fileName.substring(0, idx);
+        String hz = fileName.substring(idx);
+        fileName = preName + System.currentTimeMillis() + hz;
+        try {
+            if (fileName.contains("..")) {
+                throw new FileException("Sorry! Filename contains invalid path sequence " + fileName);
+            }
+            Path targetLocation = this.mediaStorageLocation.resolve(fileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            log.info("media文件上传路径: {}", targetLocation.toString());
             map.put("fileName", fileName);
             long duration = VideoUtil.getDuration(targetLocation.toString());
             map.put("duration", duration);
@@ -140,7 +164,7 @@ public class FileService {
      */
     public Resource loadVideoFileAsResource(String fileName) {
         try {
-            Path filePath = this.videoStorageLocation.resolve(fileName).normalize();
+            Path filePath = this.mediaStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;
