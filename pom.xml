@@ -83,8 +83,8 @@
         <junit.utReportFolder>${project.testresult.directory}/test</junit.utReportFolder>
         <junit.itReportFolder>${project.testresult.directory}/integrationTest</junit.itReportFolder>
         <!-- jhipster-needle-maven-property -->
-        <releases.repo>http://192.168.150.20:8888/repository/maven-releases/</releases.repo>
-		<snapshots.repo>http://192.168.150.20:8888/repository/maven-snapshots/</snapshots.repo>
+        <releases.repo>https://192.168.150.20:8888/repository/maven-releases/</releases.repo>
+		<snapshots.repo>https://192.168.150.20:8888/repository/maven-snapshots/</snapshots.repo>
     </properties>
 
     <dependencyManagement>
